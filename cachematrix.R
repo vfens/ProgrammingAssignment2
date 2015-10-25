@@ -8,16 +8,16 @@
 
 # This function creates a special "matrix" object that can cache its inverse.
 makeCacheMatrix <- function(myMatrix = matrix()) {
-        myCachedInverse <- NULL
+        myCachedInverse <- NULL # this parameter is stored in this functions environment 
         setNonInvertedMatrix <- function(newMatrix) {
-                myMatrix <<- newMatrix
-                myCachedInverse  <<- NULL
+                myMatrix <<- newMatrix # the setNonInvertedMatrix function is called from a different environment so use <<- in stead of <-
+                myCachedInverse  <<- NULL 
         }
-        getNonInvertedMatrix <- function() myMatrix
-        setInverse <- function(inverseFromCacheSolve) myCachedInverse  <<- inverseFromCacheSolve
-        getInverse <- function() myCachedInverse 
+        getNonInvertedMatrix <- function() myMatrix # return myMatrix
+        setInverse <- function(inverseFromCacheSolve) myCachedInverse  <<- inverseFromCacheSolve # save the inverse matrix in this function's environment
+        getInverse <- function() myCachedInverse # return the cached inverse 
         
-        # this is the output
+        # the output of this function is a list of function
         list(setNonInvertedMatrix = setNonInvertedMatrix, 
              getNonInvertedMatrix = getNonInvertedMatrix,
              setInverse = setInverse,
@@ -29,17 +29,15 @@ makeCacheMatrix <- function(myMatrix = matrix()) {
 # This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
 # If the inverse has already been calculated (and the matrix has not changed), 
 # then the cachesolve should retrieve the inverse from the cache.
-
 cacheSolve <- function(listOfFunctions, ...) {
-        ## Return the inverse matrix 
-  
-       tempvar <- listOfFunctions$getInverse()  # = myCachedInverse, either NULL or cached inverse
+        
+        tempvar <- listOfFunctions$getInverse()  # = myCachedInverse, either NULL or cached inverse
         if(!is.null(tempvar)) {
                 message("getting cached data")
                 return(tempvar) # returns cached inverse
                 # functie ends here
         }
-       # no cached inverse yet, so calculate here
+       # no cached inverse yet, so calculate it here
        # first retrieve original matrix
         data <- listOfFunctions$getNonInvertedMatrix()
         # calculate inverse
